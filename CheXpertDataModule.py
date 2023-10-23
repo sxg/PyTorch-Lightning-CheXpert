@@ -1,6 +1,7 @@
 import os
 import lightning.pytorch as pl
 import torch.utils.data as data
+import torchvision.transforms as T
 from CheXpertDataset import CheXpertDataset
 
 
@@ -20,9 +21,21 @@ class CheXpertDataModule(pl.LightningDataModule):
         )
 
         # Setup the transforms
-        self.train_transform = None
+        self.train_transform = T.Compose(
+            [
+                T.ToTensor(),
+                T.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
+                T.Resize((320, 320), antialias=True),
+            ]
+        )
         self.train_target_transform = None
-        self.val_transform = None
+        self.val_transform = T.Compose(
+            [
+                T.ToTensor(),
+                T.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
+                T.Resize((320, 320), antialias=True),
+            ]
+        )
         self.val_target_transform = None
 
     def train_dataloader(self):
