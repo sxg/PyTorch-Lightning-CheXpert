@@ -69,7 +69,7 @@ class CheXpertModule(pl.LightningModule):
         self.log("val/loss", loss)
         acc = self.accuracy_fn(output, labels)
         self.log("val/acc", acc)
-        auroc = self.auroc_fn(output, labels)
+        auroc = self.auroc_fn(output, labels.int())
         self.log("val/auroc", auroc)
 
         # Log sample data to TensorBoard
