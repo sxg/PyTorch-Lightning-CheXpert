@@ -21,9 +21,9 @@ class CheXpertModule(pl.LightningModule):
         )
         self.loss_fn = nn.BCELoss()
         self.accuracy_fn = Accuracy(
-            task="multilabel", num_classes=len(self.tasks)
+            task="multilabel", num_labels=len(self.tasks)
         )
-        self.auroc_fn = AUROC(task="multilabel", num_classes=len(self.tasks))
+        self.auroc_fn = AUROC(task="multilabel", num_labels=len(self.tasks))
 
         # Flags for logging
         self.train_logged_images = False

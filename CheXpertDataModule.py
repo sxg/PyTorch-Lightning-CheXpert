@@ -1,7 +1,7 @@
 import os
 import lightning.pytorch as pl
 import torch.utils.data as data
-import CheXpertDataset
+from CheXpertDataset import CheXpertDataset
 
 
 class CheXpertDataModule(pl.LightningDataModule):
