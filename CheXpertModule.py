@@ -101,6 +101,11 @@ class CheXpertModule(pl.LightningModule):
 
     def _format_labels(labels, tasks):
         string = " ".join(tasks) + "\n"
-        for idx in range(labels.shape[0]):
-            string += labels[idx, :] + "\n"
+        for row_i in range(labels.shape[0]):
+            string += (
+                " ".join(
+                    [str(labels[row_i, col_i]) for col_i in range(len(tasks))]
+                )
+                + "\n"
+            )
         return string
