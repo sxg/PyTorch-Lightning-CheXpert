@@ -1,8 +1,6 @@
 import os
 import lightning.pytorch as pl
-import torch
 import torch.utils.data as data
-import torchvision.transforms as T
 import CheXpertDataset
 
 
@@ -22,16 +20,18 @@ class CheXpertDataModule(pl.LightningDataModule):
         )
 
         # Setup the transforms
-        self.transform = None
-        self.target_transform = None
+        self.train_transform = None
+        self.train_target_transform = None
+        self.val_transform = None
+        self.val_target_transform = None
 
     def train_dataloader(self):
         train_dataset = CheXpertDataset(
             self.data_path,
             self.train_df_path,
             self.tasks,
-            self.transform,
-            self.target_transform,
+            self.train_transform,
+            self.train_target_transform,
         )
         return data.DataLoader(
             train_dataset,
@@ -46,8 +46,8 @@ class CheXpertDataModule(pl.LightningDataModule):
             self.data_path,
             self.val_df_path,
             self.tasks,
-            self.transform,
-            self.target_transform,
+            self.val_transform,
+            self.val_target_transform,
         )
         return data.DataLoader(
             val_dataset,
