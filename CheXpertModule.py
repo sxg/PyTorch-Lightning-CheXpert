@@ -21,9 +21,15 @@ class CheXpertModule(pl.LightningModule):
         )
         self.loss_fn = nn.BCELoss()
         self.accuracy_fn = Accuracy(
-            task="multilabel", num_labels=len(self.tasks)
+            task="multilabel",
+            num_labels=len(self.tasks),
+            average=None,
         )
-        self.auroc_fn = AUROC(task="multilabel", num_labels=len(self.tasks))
+        self.auroc_fn = AUROC(
+            task="multilabel",
+            num_labels=len(self.tasks),
+            average=None,
+        )
 
         # Flags for logging
         self.train_logged_images = False
@@ -67,10 +73,13 @@ class CheXpertModule(pl.LightningModule):
         output = self(imgs)
         loss = self.loss_fn(output, labels)
         self.log("val/loss", loss)
+
+        # Calculate metrics for each task
         acc = self.accuracy_fn(output, labels)
-        self.log("val/acc", acc)
         auroc = self.auroc_fn(output, labels.int())
-        self.log("val/auroc", auroc)
+        for i, task in enumerate(self.tasks):
+            self.log(f"val/acc_{task}", acc[i])
+            self.log(f"val/auroc_{task}", auroc[i])
 
         # Log sample data to TensorBoard
         if not self.val_logged_images:
