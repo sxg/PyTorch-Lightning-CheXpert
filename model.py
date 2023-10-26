@@ -1,8 +1,10 @@
+import torch
 from torch import nn
 import lightning.pytorch as pl
 from torchvision import models
 from torchvision.utils import make_grid
-from torchmetrics import Accuracy, AUROC
+from torchmetrics import Accuracy, AUROC, ROC
+import matplotlib.pyplot as plt
 
 
 class CheXpertModule(pl.LightningModule):
@@ -29,6 +31,8 @@ class CheXpertModule(pl.LightningModule):
             num_labels=len(self.tasks),
             average=None,
         )
+        self.val_output = None
+        self.val_labels = None
 
         # Flags for logging
         self.train_logged_images = False
@@ -67,6 +71,17 @@ class CheXpertModule(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         imgs, labels = batch
         output = self(imgs)
+
+        if self.val_output is None:
+            self.val_output = output
+        else:
+            self.val_output = torch.cat([self.val_output, output])
+
+        if self.val_labels is None:
+            self.val_labels = labels
+        else:
+            self.val_labels = torch.cat([self.val_labels, labels])
+
         loss = self.criterion(output, labels)
         self.log("val/loss", loss)
 
@@ -103,6 +118,23 @@ class CheXpertModule(pl.LightningModule):
 
     def on_validation_epoch_end(self):
         self.val_logged_images = False
+
+        roc = ROC(task="multilabel", num_labels=len(self.tasks))
+        fpr, tpr, _ = roc(self.val_output.float(), self.val_labels.int())
+        for i in range(self.val_output.shape[1]):
+            plt.figure()
+            plt.plot(fpr[i].cpu(), tpr[i].cpu(), label="ROC Curve")
+            plt.xlim(0, 1)
+            plt.ylim(0, 1)
+            plt.plot([0, 1], [0, 1])
+            plt.xlabel("False Positive Rate")
+            plt.ylabel("True Positive Rate")
+            plt.title(f"{self.tasks[i]} ROC Curve")
+            plt.legend(loc="lower right")
+            plt.savefig(f"{self.tasks[i]} ROC Curve.png")
+
+        self.val_output = None
+        self.val_labels = None
 
     def _format_labels(labels, tasks):
         string = ", ".join(tasks) + "  \n"
