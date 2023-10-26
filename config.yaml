@@ -1,0 +1,16 @@
+model:
+  tasks: &tasks
+    - "Atelectasis"
+    - "Cardiomegaly"
+    - "Consolidation"
+    - "Edema"
+    - "Pleural Effusion"
+optimizer:
+  class_path: torch.optim.Adam
+  init_args:
+    lr: 1e-4
+data:
+  tasks: *tasks
+  batch_size: 64
+  data_path: "../" # Path containing CheXpert-v1.0-small
+ckpt_path: "./lightning_logs/version_24/checkpoints/epoch=2-step=10473.ckpt"

@@ -6,11 +6,10 @@ from torchmetrics import Accuracy, AUROC
 
 
 class CheXpertModule(pl.LightningModule):
-    def __init__(self, tasks, lr):
+    def __init__(self, tasks):
         super().__init__()
 
         self.tasks = tasks
-        self.lr = lr
         self.save_hyperparameters()
 
         # Setup the model, loss function, and other metrics
@@ -37,9 +36,6 @@ class CheXpertModule(pl.LightningModule):
 
     def forward(self, x):
         return self.model(x)
-
-    def configure_optimizers(self):
-        return optim.Adam(self.parameters(), betas=(0.9, 0.999), lr=self.lr)
 
     def training_step(self, batch, batch_idx):
         imgs, labels = batch
