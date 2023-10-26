@@ -6,7 +6,7 @@ from torchmetrics import Accuracy, AUROC
 
 
 class CheXpertModule(pl.LightningModule):
-    def __init__(self, tasks):
+    def __init__(self, tasks, criterion):
         super().__init__()
 
         self.tasks = tasks
@@ -18,7 +18,7 @@ class CheXpertModule(pl.LightningModule):
             nn.Linear(self.model.classifier.in_features, len(self.tasks)),
             nn.Sigmoid(),
         )
-        self.loss_fn = nn.BCELoss()
+        self.criterion = criterion
         self.accuracy_fn = Accuracy(
             task="multilabel",
             num_labels=len(self.tasks),
@@ -40,7 +40,7 @@ class CheXpertModule(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         imgs, labels = batch
         output = self(imgs)
-        loss = self.loss_fn(output, labels)
+        loss = self.criterion(output, labels)
         self.log("train/loss", loss)
 
         # Log sample data to TensorBoard
@@ -67,7 +67,7 @@ class CheXpertModule(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         imgs, labels = batch
         output = self(imgs)
-        loss = self.loss_fn(output, labels)
+        loss = self.criterion(output, labels)
         self.log("val/loss", loss)
 
         # Calculate metrics for each task
