@@ -109,12 +109,10 @@ class CheXpertModule(pl.LightningModule):
         self.val_logged_images = False
 
     def _format_labels(labels, tasks):
-        string = " ".join(tasks) + "\n"
+        string = ", ".join(tasks) + "  \n"
         for row_i in range(labels.shape[0]):
-            string += (
-                " ".join(
-                    [str(labels[row_i, col_i]) for col_i in range(len(tasks))]
-                )
-                + "\n"
-            )
+            str_labels = []
+            for col_i in range(labels.shape[1]):
+                str_labels += str(labels[row_i, col_i].item())
+            string += ", ".join(str_labels) + "  \n"
         return string
