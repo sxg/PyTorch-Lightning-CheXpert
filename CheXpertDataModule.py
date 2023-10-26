@@ -27,7 +27,7 @@ class CheXpertDataModule(pl.LightningDataModule):
                 T.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
                 T.Resize((320, 320), antialias=True),
                 T.RandomRotation(15),
-                T.RandomResizedCrop((290, 290), (0.8, 1.2)),
+                T.RandomResizedCrop((290, 290), (0.8, 1.2), antialias=True),
             ]
         )
         self.train_target_transform = None
