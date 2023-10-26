@@ -2,7 +2,7 @@ import os
 import lightning.pytorch as pl
 import torch.utils.data as data
 import torchvision.transforms as T
-from CheXpertDataset import CheXpertDataset
+from dataset import CheXpertDataset
 
 
 class CheXpertDataModule(pl.LightningDataModule):

@@ -1,5 +1,5 @@
-from CheXpertModule import CheXpertModule
-from CheXpertDataModule import CheXpertDataModule
+from model import CheXpertModule
+from data import CheXpertDataModule
 from lightning.pytorch.cli import LightningCLI
 
 

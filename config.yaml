@@ -1,14 +1,12 @@
 model:
-  class_path: CheXpertModule.CheXpertModule
-  init_args:
-    tasks: &tasks
-      - "Atelectasis"
-      - "Cardiomegaly"
-      - "Consolidation"
-      - "Edema"
-      - "Pleural Effusion"
-    criterion:
-      class_path: torch.nn.BCELoss
+  tasks: &tasks
+    - "Atelectasis"
+    - "Cardiomegaly"
+    - "Consolidation"
+    - "Edema"
+    - "Pleural Effusion"
+  criterion:
+    class_path: torch.nn.BCELoss
 optimizer:
   class_path: torch.optim.Adam
   init_args:

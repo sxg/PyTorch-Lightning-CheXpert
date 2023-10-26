@@ -1,4 +1,4 @@
-from torch import nn, optim
+from torch import nn
 import lightning.pytorch as pl
 from torchvision import models
 from torchvision.utils import make_grid
